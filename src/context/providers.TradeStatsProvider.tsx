@@ -7,5 +7,6 @@ export const {
   useContextSignals
 } = CreateFastContext({
   cheatMode: '@CheatModes4',
+  csvData: [],
 })
 

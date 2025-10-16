@@ -2,9 +2,8 @@ import './App.css'
 import { useEffect, useMemo, useState } from 'react'
 import { useCvContext } from '@context'
 import { DataMT5, Header } from '@components'
-import { useHandleClouds } from '@hooks'
+import { useFetchDataCSV, useHandleClouds } from '@hooks'
 import { useContextSignals } from '@context'
-import Papa from 'papaparse';
 
 const sheetUrl =
   // /* rm */'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-N61Baocf2PbuKP3nfHATNc-aTTNaD9Mbn_bfA-VOTkKYFAOtUw0bd1LWQcufjUjcC4XrRJrd-N9n/pub?output=csv';
@@ -15,15 +14,20 @@ export default function App () {
   const [ isShowing, set ] = useCvContext(s => s.isShowing)
   const [ isPrinting, ] = useCvContext(s => s.isPrinting)
 
-  const [ data, setData ] = useState([]);
+  // const [ data, setData ] = useState([]);
   const [ currentMonth, setCurrentMonth ] = useState(new Date().getMonth());
   const [ currentYear, setCurrentYear ] = useState(new Date().getFullYear());
 
   // useHandleClouds()
+  useFetchDataCSV(sheetUrl)
 
   const {
-    cheatMode
+    csvData
    } = useContextSignals()
+
+  const data = csvData.get
+
+  console.log({ data })
 
   useEffect(() => {
     if (!isShowing) {
@@ -33,7 +37,7 @@ export default function App () {
   }, [ isShowing, set ])
 
   // 1️⃣ Cargar datos CSV con PapaParse
-  useEffect(() => {
+/*   useEffect(() => {
     fetch(sheetUrl)
       .then((res) => res.text())
       .then((csvText) => {
@@ -69,7 +73,7 @@ export default function App () {
       })
       .catch((err) => console.error("Error leyendo CSV:", err));
   }, [ sheetUrl ]);
-
+ */
   // 2️⃣ Agrupar trades por día
   const tradesByDay = useMemo(() => {
     const grouped = {};
@@ -146,7 +150,7 @@ export default function App () {
           onClick={goToPrevMonth}
           className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
         >
-          ◀
+          {'<'}
         </button>
 
         <div className="text-center">
@@ -162,7 +166,7 @@ export default function App () {
           onClick={goToNextMonth}
           className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
         >
-          ▶
+          {'>'} 
         </button>
       </div>
 
