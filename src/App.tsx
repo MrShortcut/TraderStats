@@ -1,9 +1,8 @@
 import './App.css'
 import { useEffect } from 'react'
 import { useCvContext } from '@context'
-import { Header } from '@components'
+import { DataMT5, Header } from '@components'
 import { useHandleClouds } from '@hooks'
-import { DataMT5 } from './components/DataMT5'
 import { useContextSignals } from '@context'
 
 export default function App () {

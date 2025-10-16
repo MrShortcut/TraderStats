@@ -151,7 +151,7 @@ export default function TradeCalendar ({ data }) {
                       : `-$${ Math.abs(profit).toFixed(2) }`}
                 </div>}
 
-                {!isSaturday && !isDomingo && <div className="text-xs text-gray-300">{count === 0} {count !== 0 && `${count} trades`}</div>}
+                {!isSaturday && !isDomingo && <div className="text-xs text-gray-300">{count === 0} {count !== 0 && `${ count } trades`}</div>}
 
 
                 {/* Bloque resumen semanal */}
@@ -181,6 +181,7 @@ export const DataMT5 = () => {
   const URL =
   // /* rm */'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-N61Baocf2PbuKP3nfHATNc-aTTNaD9Mbn_bfA-VOTkKYFAOtUw0bd1LWQcufjUjcC4XrRJrd-N9n/pub?output=csv';
   /* gm */ 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRV5_fxsuUfgIhGy5vIinwxKgGTeXxdSce9Tr3WuPgK9Td6EdiiapySOVMHKIIxDb_EYktWpq8m3Fm/pub?output=csv'
+  // /* ftmo */'https://docs.google.com/spreadsheets/d/e/2PACX-1vSM9igKVySEEZr0t4NGQEPKfaCY_fMp9MGRLRLKdVGjsSZRS-MskukKepbKEXIsSluBHpAv5uioiHKw/pub?output=csv'
   // 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT9fLIM8ySYWRd62XQYz-rafRnilRvln1ZfD1IFpTq6t0CDgPqjVpCo4CRT5T4t5g/pub?output=csv'
   const [ data, setData ] = useState([]);
 

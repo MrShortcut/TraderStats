@@ -14,3 +14,4 @@ export * from './Space';
 export * from './ThemeToggle';
 export * from './TransitionAnimated';
 export * from './VITE_DOC';
+export * from './DataMT5';
