@@ -23,14 +23,14 @@ export default function App () {
   useFetchDataCSV(sheetUrl)
 
   const {
-    positions: csvData,
+    positions: positionsSignal,
     tradeHistoryReport,
    } = useContextSignals()
 
-  const data = csvData.get
+  const positions = positionsSignal.get
 
   console.log({
-    data,
+    positions,
     historyReport: tradeHistoryReport.get
   })
 
@@ -82,14 +82,14 @@ export default function App () {
   // 2️⃣ Agrupar trades por día
   const tradesByDay = useMemo(() => {
     const grouped = {};
-    data.forEach((d) => {
+    positions.forEach((d) => {
       if (!d.time) return;
       const datePart = d.time.split(" ")[ 0 ].replaceAll(".", "-");
       if (!grouped[ datePart ]) grouped[ datePart ] = [];
       grouped[ datePart ].push(d);
     });
     return grouped;
-  }, [ data ]);
+  }, [ positions ]);
 
   // 3️⃣ Navegación entre meses
   const goToPrevMonth = () => {

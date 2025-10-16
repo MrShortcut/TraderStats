@@ -5,7 +5,29 @@ import {
   RawCsvRow,
   useContextSignals
 } from '@/context'
+import { cleanText } from '@/utilities'
 
+const lineParser = (headerLines: string[]) => {
+  for (const line of headerLines) {
+    const [ label, , , value ] = line.split(',')
+
+    if (line.toLowerCase().includes('trade history report')) {
+      CsvCleanedTradeHistoryReport.title = 'Trade History Report'
+    }
+    if (line.toLowerCase().startsWith('name')) {
+      CsvCleanedTradeHistoryReport.name = cleanText(value)
+    }
+    if (line.toLowerCase().startsWith('account')) {
+      CsvCleanedTradeHistoryReport.account = cleanText(value)
+    }
+    if (line.toLowerCase().startsWith('company')) {
+      CsvCleanedTradeHistoryReport.company = cleanText(value)
+    }
+    if (line.toLowerCase().startsWith('date')) {
+      CsvCleanedTradeHistoryReport.date = cleanText(value)
+    }
+  }
+}
 
 export const useFetchDataCSV = (URL: string) => {
   const { positions, tradeHistoryReport } = useContextSignals()
@@ -15,6 +37,7 @@ export const useFetchDataCSV = (URL: string) => {
       .then((res) => res.text())
       .then((csvText) => {
         const lines = csvText.split('\n')
+        // console.log({ lines })
 
         // ✅ Buscamos el encabezado del reporte
         const reportStart = lines.findIndex((l) =>
@@ -23,45 +46,15 @@ export const useFetchDataCSV = (URL: string) => {
 
         // Tomamos las líneas que componen la cabecera (típicamente 5 o 6)
         const headerLines = lines.slice(reportStart, reportStart + 6)
-
-        // 🧹 Función utilitaria para limpiar strings
-        const cleanText = (text?: string) =>
-          text
-            ?.replace(/\r/g, '')           // elimina retornos de carro
-            .replace(/"/g, '')             // elimina comillas
-            .replace(/\s+/g, ' ')          // reemplaza múltiples espacios por uno
-            .trim()                        // elimina espacios al inicio y final
-          ?? ''
-
+        // console.log({ headerLines })
 
         // 🔹 Parseamos línea por línea
-        for (const line of headerLines) {
-          const [ label, , , value ] = line.split(',')
-
-          if (line.toLowerCase().includes('trade history report')) {
-            CsvCleanedTradeHistoryReport.title = 'Trade History Report'
-          }
-          if (line.toLowerCase().startsWith('name')) {
-            CsvCleanedTradeHistoryReport.name = cleanText(value)
-          }
-          if (line.toLowerCase().startsWith('account')) {
-            CsvCleanedTradeHistoryReport.account = cleanText(value)
-          }
-          if (line.toLowerCase().startsWith('company')) {
-            CsvCleanedTradeHistoryReport.company = cleanText(value)
-          }
-          if (line.toLowerCase().startsWith('date')) {
-            CsvCleanedTradeHistoryReport.date = cleanText(value)
-          }
-        }
-
-        console.log({ CsvCleanedTradeHistoryReport })
+        lineParser(headerLines)
 
         // ✅ Guardamos en el signal correspondiente
         tradeHistoryReport.set(CsvCleanedTradeHistoryReport)
 
-        console.log({ lines })
-
+        // ✅ Buscamos las posiciones
         const startIndex = lines.findIndex((l) =>
           l.toLowerCase().includes('positions')
         )
@@ -74,7 +67,7 @@ export const useFetchDataCSV = (URL: string) => {
             : lines
 
         const parsedPositions = Papa.parse<RawCsvRow>(positionsSection.join('\n'), { header: true })
-        console.log({ parsedPositions })
+        // console.log({ parsedPositions })
 
         const rowsPositions = parsedPositions.data.filter((r) => r.Symbol && r.Profit)
         console.log({ rowsPositions })

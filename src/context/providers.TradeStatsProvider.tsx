@@ -27,15 +27,6 @@ export interface TradeHistoryReport {
   company: string
   date: string
 }
-
-export interface TradeHistoryReport {
-  title: string
-  name: string
-  account: string
-  company: string
-  date: string
-}
-
 export const CsvCleanedTradeHistoryReport: TradeHistoryReport = {
   title: '',
   name: '',
