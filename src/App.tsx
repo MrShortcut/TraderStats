@@ -4,6 +4,7 @@ import { PositionsShape, useCvContext } from '@context'
 import { DataMT5, Header } from '@components'
 import { useFetchDataCSV, useHandleClouds } from '@hooks'
 import { useContextSignals } from '@context'
+import { Stringify } from './utilities/stringify';
 
 const sheetUrl =
   // /* rm */'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-N61Baocf2PbuKP3nfHATNc-aTTNaD9Mbn_bfA-VOTkKYFAOtUw0bd1LWQcufjUjcC4XrRJrd-N9n/pub?output=csv';
@@ -22,12 +23,16 @@ export default function App () {
   useFetchDataCSV(sheetUrl)
 
   const {
-    positions: csvData
+    positions: csvData,
+    tradeHistoryReport,
    } = useContextSignals()
 
   const data = csvData.get
 
-  console.log({ data })
+  console.log({
+    data,
+    historyReport: tradeHistoryReport.get
+  })
 
   useEffect(() => {
     if (!isShowing) {
@@ -143,6 +148,7 @@ export default function App () {
 
     {!isPrinting && <Header />}
 
+    {Stringify(tradeHistoryReport.get)}
     <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
