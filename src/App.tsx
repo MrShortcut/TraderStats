@@ -1,6 +1,6 @@
 import './App.css'
 import { useEffect, useMemo, useState } from 'react'
-import { useCvContext } from '@context'
+import { PositionsShape, useCvContext } from '@context'
 import { DataMT5, Header } from '@components'
 import { useFetchDataCSV, useHandleClouds } from '@hooks'
 import { useContextSignals } from '@context'
@@ -22,7 +22,7 @@ export default function App () {
   useFetchDataCSV(sheetUrl)
 
   const {
-    csvData
+    positions: csvData
    } = useContextSignals()
 
   const data = csvData.get

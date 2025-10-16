@@ -2,13 +2,21 @@ import { useEffect } from 'react'
 import Papa from 'papaparse'
 import { useContextSignals } from '@/context'
 
+export interface RawCsvRow {
+  Time?: string
+  Symbol?: string
+  Type?: string
+  Profit?: string | number
+}
+
 export const useFetchDataCSV = (URL: string) => {
-  const { csvData } = useContextSignals()
+  const { positions } = useContextSignals()
 
   useEffect(() => {
     fetch(URL)
       .then((res) => res.text())
       .then((csvText) => {
+        console.log({ csvText })
         const lines = csvText.split('\n')
         const startIndex = lines.findIndex((l) =>
           l.toLowerCase().includes('positions')
@@ -16,17 +24,19 @@ export const useFetchDataCSV = (URL: string) => {
         const endIndex = lines.findIndex((l) =>
           l.toLowerCase().includes('orders')
         )
-        const section =
+        const positionsSection =
           startIndex !== -1 && endIndex !== -1
             ? lines.slice(startIndex + 1, endIndex)
             : lines
 
-        const parsed = Papa.parse(section.join('\n'), { header: true })
-        console.log({ parsed })
-        const rows = parsed.data.filter((r) => r.Symbol && r.Profit)
-        console.log({ rows })
+        const parsedPositions = Papa.parse<RawCsvRow>(positionsSection.join('\n'), { header: true })
 
-        const clean = rows.map((r) => ({
+        console.log({ parsedPositions })
+
+        const rowsPositions = parsedPositions.data.filter((r) => r.Symbol && r.Profit)
+        console.log({ rowsPositions })
+
+        const CsvCleanedPositions = rowsPositions.map((r) => ({
           time: r.Time?.trim(),
           symbol: r.Symbol?.trim(),
           type: r.Type?.trim(),
@@ -35,9 +45,9 @@ export const useFetchDataCSV = (URL: string) => {
             .replace(/[^0-9.-]/g, '')   // elimina cualquier símbolo restante
           ) || 0,
         }))
-        console.log({ clean })
+        console.log({ CsvCleanedPositions })
 
-        csvData.set(clean)
+        positions.set(CsvCleanedPositions)
       })
       .catch((err) => console.error('Error leyendo CSV:', err))
   }, [ URL ])
