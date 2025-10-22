@@ -48,7 +48,7 @@ export const useFetchDataCSV = (URL: string) => {
 
         // Tomamos las líneas que componen la cabecera (típicamente 5 o 6)
         const headerLines = lines.slice(reportStart, reportStart + 6)
-        // console.log({ headerLines })
+        console.log({ headerLines })
 
         // 🔹 Parseamos línea por línea
         lineParser(headerLines)

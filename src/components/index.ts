@@ -12,6 +12,6 @@ export * from './SkillsBody';
 export * from './SmartCity';
 export * from './Space';
 export * from './ThemeToggle';
+export * from './TradeHistoryReport';
 export * from './TransitionAnimated';
 export * from './VITE_DOC';
-export * from './DataMT5';

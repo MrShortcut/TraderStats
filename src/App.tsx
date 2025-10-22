@@ -1,7 +1,7 @@
 import './App.css'
 import { useEffect, useMemo, useState } from 'react'
 import { useCvContext } from '@context'
-import { Header } from '@components'
+import { Header, TradeHistoryReport } from '@components'
 import { useFetchDataCSV, useHandleClouds } from '@hooks'
 import { useContextSignals } from '@context'
 import { Stringify } from './utilities/stringify';
@@ -109,21 +109,21 @@ export default function App () {
   return <div className='bg-charlie-brown rounded-lg bg-white dark:bg-lightDark min-h-screen'>
 
     {!isPrinting && <Header />}
+    <TradeHistoryReport />
 
-    {Stringify(tradeHistoryReport.get)}
-    <div className="bg-macLight dark:bg-slate-900 text-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto mt-10">
+    <div className="bg-macLight dark:bg-slate-900 text-white p-1 rounded-xl shadow-lg max-w-6xl mx-auto mt-2">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={goToPrevMonth}
-          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText"
+          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText shadow-sm dark:bg-slate-800 dark:text-macText hover:dark:bg-slate-700 hover:dark:text-black dark:shadow-sm"
         >
           {'<'}
         </button>
 
         <div className="text-center">
           <h2 className="text-2xl font-bold capitalize text-macText">
-            000 {monthName} {currentYear}
+            {monthName} {currentYear}
           </h2>
           <p className="text-green-400 font-semibold">
             Monthly P/L: ${monthlyProfit.toFixed(2)}
@@ -132,14 +132,14 @@ export default function App () {
 
         <button
           onClick={goToNextMonth}
-          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText"
+          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText shadow-sm dark:bg-slate-800 dark:text-macText hover:dark:bg-slate-700 hover:dark:text-black dark:shadow-sm"
         >
-          {'>'} 
+          {'>'}
         </button>
       </div>
 
       {/* Días de la semana */}
-      <div className="grid grid-cols-7 text-center font-semibold mb-2 text-gray-400">
+      <div className="grid grid-cols-7 text-center font-thin mb-2 text-gray-400">
         {[ "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" ].map((d) => (
           <div key={d}>{d}</div>
         ))}
@@ -192,17 +192,15 @@ export default function App () {
                       : `-$${ Math.abs(profit).toFixed(2) }`}
                 </div>
 
-                {/* <div className="text-xs text-gray-300">{count} trades</div> */}
-
                 <div className="text-xs text-gray-300">{count === 0} {count !== 0 && `${ count } trades`}</div>
 
                 {isSaturday && weekStats.count > 0 && (
-                  <div className="flex flex-col text-center py-1 text-xs rounded-b-lg border-t border-gray-800">
+                  <div className="flex flex-col text-center text-xs rounded-b-lg">
                     <div className="text-[10px] uppercase text-gray-400">
                       Week {wi + 1}
                     </div>
                     <div
-                      className={`font-bold ${ weekStats.profit >= 0 ? "text-green-400" : "text-red-400"
+                      className={`font-bold ${ weekStats.profit >= 0 ? "text-green-500" : "text-red-400"
                         }`}
                     >
                       ${weekStats.profit.toFixed(2)}
