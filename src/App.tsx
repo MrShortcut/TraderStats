@@ -18,6 +18,7 @@ export default function App () {
   // const [ data, setData ] = useState([]);
   const [ currentMonth, setCurrentMonth ] = useState(new Date().getMonth());
   const [ currentYear, setCurrentYear ] = useState(new Date().getFullYear());
+  const [ currentDay, setCurrentDay ] = useState(new Date().getUTCDate());
 
   // useHandleClouds()
   useFetchDataCSV(sheetUrl)
@@ -180,9 +181,15 @@ export default function App () {
                 key={wi + "-" + i}
                 className={`relative aspect-square flex flex-col justify-center items-center rounded-lg transition-all ${ profitColor }`}
               >
-                <div className="absolute top-1 left-1 text-xs text-gray-400">
+                {date.getDate() !== currentDay
+                  ? <div className="absolute top-1 left-1 text-xs text-gray-400">
                   {date.getDate()}
-                </div>
+                  </div>
+                  : <div className=
+                    {`absolute top-1 left-1 text-xs text-macPanel rounded-full p-1 shadow ${profitColor} bg-opacity-50 mix-blend-screen`}
+                  >
+                    {date.getDate()}
+                  </div>}
 
                 <div className="text-sm font-bold">
                   {profit === 0
