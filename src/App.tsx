@@ -1,15 +1,15 @@
 import './App.css'
 import { useEffect, useMemo, useState } from 'react'
-import { PositionsShape, useCvContext } from '@context'
-import { DataMT5, Header } from '@components'
+import { useCvContext } from '@context'
+import { Header } from '@components'
 import { useFetchDataCSV, useHandleClouds } from '@hooks'
 import { useContextSignals } from '@context'
 import { Stringify } from './utilities/stringify';
 
 const sheetUrl =
   // /* rm */'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-N61Baocf2PbuKP3nfHATNc-aTTNaD9Mbn_bfA-VOTkKYFAOtUw0bd1LWQcufjUjcC4XrRJrd-N9n/pub?output=csv';
-  /* gm */ 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRV5_fxsuUfgIhGy5vIinwxKgGTeXxdSce9Tr3WuPgK9Td6EdiiapySOVMHKIIxDb_EYktWpq8m3Fm/pub?output=csv'
-// /* ftmo */'https://docs.google.com/spreadsheets/d/e/2PACX-1vSM9igKVySEEZr0t4NGQEPKfaCY_fMp9MGRLRLKdVGjsSZRS-MskukKepbKEXIsSluBHpAv5uioiHKw/pub?output=csv'
+ // /* gm */ 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRV5_fxsuUfgIhGy5vIinwxKgGTeXxdSce9Tr3WuPgK9Td6EdiiapySOVMHKIIxDb_EYktWpq8m3Fm/pub?output=csv'
+/* ftmo */'https://docs.google.com/spreadsheets/d/e/2PACX-1vSdQ-50DjW1aO4W_b6d2g07wivk2UuOqCpJShN2uHcrMJPxyDYhrwZ5diFhvl2wcfin5k_MmMIORRvA/pub?output=csv'
 
 export default function App () {
   const [ isShowing, set ] = useCvContext(s => s.isShowing)
@@ -41,44 +41,6 @@ export default function App () {
     }
   }, [ isShowing, set ])
 
-  // 1️⃣ Cargar datos CSV con PapaParse
-/*   useEffect(() => {
-    fetch(sheetUrl)
-      .then((res) => res.text())
-      .then((csvText) => {
-        const lines = csvText.split("\n");
-        const startIndex = lines.findIndex((l) =>
-          l.toLowerCase().includes("positions")
-        );
-        const endIndex = lines.findIndex((l) =>
-          l.toLowerCase().includes("orders")
-        );
-        const section =
-          startIndex !== -1 && endIndex !== -1
-            ? lines.slice(startIndex + 1, endIndex)
-            : lines;
-
-        const parsed = Papa.parse(section.join("\n"), { header: true });
-        console.log({ parsed })
-        const rows = parsed.data.filter((r) => r.Symbol && r.Profit);
-        console.log({ rows })
-
-        const clean = rows.map((r) => ({
-          time: r.Time?.trim(),
-          symbol: r.Symbol?.trim(),
-          type: r.Type?.trim(),
-          profit: parseFloat(String(r.Profit || "")
-            .replace(",", ".")          // convierte 75,90 → 75.90
-            .replace(/[^0-9.-]/g, "")   // elimina cualquier símbolo restante
-          ) || 0,
-        }));
-        console.log({ clean })
-
-        setData(clean);
-      })
-      .catch((err) => console.error("Error leyendo CSV:", err));
-  }, [ sheetUrl ]);
- */
   // 2️⃣ Agrupar trades por día
   const tradesByDay = useMemo(() => {
     const grouped = {};
@@ -144,24 +106,24 @@ export default function App () {
     return sum + profit;
   }, 0);
 
-  return <div className='bg-charlie-brown rounded-lg'>
+  return <div className='bg-charlie-brown rounded-lg bg-white dark:bg-lightDark min-h-screen'>
 
     {!isPrinting && <Header />}
 
     {Stringify(tradeHistoryReport.get)}
-    <div className="bg-gray-900 text-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto">
+    <div className="bg-macLight dark:bg-slate-900 text-white p-6 rounded-xl shadow-lg max-w-5xl mx-auto mt-10">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={goToPrevMonth}
-          className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
+          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText"
         >
           {'<'}
         </button>
 
         <div className="text-center">
-          <h2 className="text-2xl font-bold capitalize">
-            {monthName} {currentYear}
+          <h2 className="text-2xl font-bold capitalize text-macText">
+            000 {monthName} {currentYear}
           </h2>
           <p className="text-green-400 font-semibold">
             Monthly P/L: ${monthlyProfit.toFixed(2)}
@@ -170,7 +132,7 @@ export default function App () {
 
         <button
           onClick={goToNextMonth}
-          className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
+          className="px-3 py-1 bg-macPanel rounded hover:bg-macHover text-macBorder hover:text-macText"
         >
           {'>'} 
         </button>
@@ -200,16 +162,16 @@ export default function App () {
           return week.map((date, i) => {
             if (!date)
               return (
-                <div key={wi + "-" + i} className="aspect-square rounded bg-gray-800" />
+                <div key={wi + "-" + i} className="aspect-square rounded bg-macLight dark:bg-slate-900" />
               );
 
             const { profit, count } = getDayStats(date);
             const profitColor =
               profit === 0
-                ? "bg-gray-800"
+                ? "bg-macLightOne dark:bg-slate-800"
                 : profit > 0
-                  ? "bg-green-700 hover:bg-green-600"
-                  : "bg-red-700 hover:bg-red-600";
+                  ? "bg-profitGreen hover:bg-green-600"
+                  : "bg-lossRed hover:bg-red-600";
 
             const isSaturday = i === 6;
 

@@ -13,16 +13,39 @@ export default {
       backgroundColor: {
         lightWhite: '#f7f8fa',
         lightDark: '#1c1f2f',
+
+        macLight: '#f6f7f8',     // fondo principal claro
+        macLightOne: '#e3e4e2',     // fondo principal claro
+        macPanel: '#ffffff',     // tarjetas o celdas
+        macBorder: '#e0e0e0',    // bordes suaves
+        macHover: '#f0f1f3',     // hover sutil
       },
       colors: {
-        salmon: '#e56952'
+        salmon: '#e56952',
+
+        macText: '#2c2c2c',      // texto principal
+        macMuted: '#777777',     // texto secundario
+        profitGreen: '#2ecc71',  // ganancia
+        lossRed: '#e74c3c',      // pérdida
+        accentBlue: '#007aff',   // acento azul tipo macOS
       },
       textColor: {
         white: '#e0e0e0',
         black: '#121212',
+
+        macText: '#717072',
+        macMuted: '#777777',
+
+        macPanel: '#ffffff',     // tarjetas o celdas
+        macBorder: '#e0e0e0',    // bordes suaves
+        macHover: '#f0f1f3',     // hover sutil
+ 
+        profitGreen: '#2ecc71',
+        lossRed: '#e74c3c',
       },
       fontFamily: {
         heading: 'Times New Roman',
+        sans: [ 'SF Pro Display', 'Helvetica Neue', 'Arial', 'sans-serif' ],
         arial: 'Arial',
       },
       fontSize: {
@@ -31,6 +54,12 @@ export default {
             lineHeight: '1rem ',
           } 
         ]
+      },
+      boxShadow: {
+        macSoft: '0 4px 12px rgba(0,0,0,0.05)', // sombra difusa tipo macOS
+      },
+      borderRadius: {
+        mac: '16px', // esquinas redondeadas suaves
       },
     },
   },

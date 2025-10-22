@@ -39,7 +39,9 @@ export const useFetchDataCSV = (URL: string) => {
         const lines = csvText.split('\n')
         // console.log({ lines })
 
-        // ✅ Buscamos el encabezado del reporte
+        /**
+         * ✅ Buscamos el encabezado del reporte
+         */
         const reportStart = lines.findIndex((l) =>
           l.toLowerCase().includes('trade history report')
         )
@@ -54,7 +56,9 @@ export const useFetchDataCSV = (URL: string) => {
         // ✅ Guardamos en el signal correspondiente
         tradeHistoryReport.set(CsvCleanedTradeHistoryReport)
 
-        // ✅ Buscamos las posiciones
+        /**
+         * ✅ Buscamos las posiciones
+         */
         const startIndex = lines.findIndex((l) =>
           l.toLowerCase().includes('positions')
         )
@@ -82,8 +86,8 @@ export const useFetchDataCSV = (URL: string) => {
           ) || 0,
         }))
 
+        // ✅ Guardamos en el signal correspondiente
         positions.set(CsvCleanedPositions)
-
       })
       .catch((err) => console.error('Error leyendo CSV:', err))
   }, [ URL ])
