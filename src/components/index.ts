@@ -15,3 +15,4 @@ export * from './ThemeToggle';
 export * from './TradeHistoryReport';
 export * from './TransitionAnimated';
 export * from './VITE_DOC';
+export * from './DateDay';
