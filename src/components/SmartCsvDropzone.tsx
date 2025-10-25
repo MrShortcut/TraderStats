@@ -95,10 +95,10 @@ export function SmartCsvDropzone () {
   }
 
   //  absolute inset-0 z-10 
-  return <div /* DragAndDrop */ className="mx-auto p-6 bg-macLight">
+  return <div /* DragAndDrop */ className="mx-auto p-6">
 
     <div className={cx(isFileLoaded ? 'hidden' : '')}>
-      <h2 className="text-2xl font-semibold mb-4">⬇️ Traiga aquí su historial de metatrader 5</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-macText">⬇️ Traiga aquí su historial de metatrader 5</h2>
 
       <div
         {...getRootProps()}
@@ -106,13 +106,13 @@ export function SmartCsvDropzone () {
           }`}
       >
         <input {...getInputProps()} />
-        <div className="text-center">
+        <div className="text-center text-gray-600">
           <p className="text-lg">
             {isDragActive
               ? "Suelta el archivo aquí..."
               : "Arrastra un archivo .csv o .xlsx (Excel) o haz click"}
           </p>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-macText mt-2">
             Si es Excel, se convierte automáticamente a CSV
           </p>
         </div>
