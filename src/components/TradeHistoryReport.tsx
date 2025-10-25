@@ -1,4 +1,4 @@
-import { useContextSignals } from '@/context'
+import { useContextSignals } from '@context'
 
 export const TradeHistoryReport = () => {
   const {
@@ -8,7 +8,7 @@ export const TradeHistoryReport = () => {
   } = useContextSignals()
 
   return (
-    <div className='flex flex-col bg-macLight text-macText pb-2 dark:bg-slate-900'>
+    <div className='bg-macLight text-macText pb-2 dark:bg-slate-900'>
       <div className='font-thin'>
         {report.title}
       </div>

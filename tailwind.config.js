@@ -61,6 +61,13 @@ export default {
       borderRadius: {
         mac: '16px', // esquinas redondeadas suaves
       },
+      borderColor: {
+        macLight: '#f6f7f8',     // fondo principal claro
+        macLightOne: '#e3e4e2',     // fondo principal claro
+        macPanel: '#ffffff',     // tarjetas o celdas
+        macBorder: '#e0e0e0',    // bordes suaves
+        macHover: '#f0f1f3',     // hover sutil
+      }
     },
   },
   plugins: [],

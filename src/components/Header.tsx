@@ -25,7 +25,7 @@ export function Header () {
     <div
       className={cx(
         'flex min-w-full gap-0 md:gap-4',
-        'size-full rounded-xl transition duration-[800ms]',
+        'size-full transition duration-[800ms]',
         'data-[closed]:-translate-y-11 data-[closed]:opacity-0',
         'data-[leave]:duration-[800ms] data-[leave]:ease-in-out',
         'data-[leave]:data-[closed]:translate-y-0 bg-macLight dark:bg-slate-900',
