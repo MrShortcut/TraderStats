@@ -3,7 +3,7 @@
 // Este componente acepta .xlsx o .csv
 // Si es Excel, lo convierte automáticamente a CSV y lo procesa con PapaParse.
 
-import React, { useCallback, useState } from "react"
+import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import Papa, { ParseResult } from "papaparse"
 import * as XLSX from "xlsx"
@@ -96,14 +96,15 @@ export function SmartCsvDropzone () {
 
   //  absolute inset-0 z-10 
   return <div /* DragAndDrop */ className="mx-auto p-6">
-
     <div className={cx(isFileLoaded ? 'hidden' : '')}>
       <h2 className="text-2xl font-semibold mb-4 text-macText">⬇️ Traiga aquí su historial de metatrader 5</h2>
 
       <div
         {...getRootProps()}
-        className={`border border-dashed rounded-md p-8 transition-shadow hover:shadow-md cursor-pointer shadow bg-macPanel ${ isDragActive ? " border-macMuted bg-[#ffeef1]" : "!border-macPanel bg-white"
-          }`}
+        className={cx(
+          'border-2 border-dashed rounded-md p-8 transition-shadow hover:shadow-md cursor-pointer shadow bg-macPanel',
+          isDragActive ? " border-macMuted bg-[#ffeef1]" : "!border-macPanel bg-macLight"
+        )}
       >
         <input {...getInputProps()} />
         <div className="text-center text-gray-600">
@@ -119,20 +120,24 @@ export function SmartCsvDropzone () {
       </div>
     </div>
 
-      {fileName && (
+    {fileName && (
       <div className={cx(
         'flex items-center justify-between',
         isFileLoaded ? 'mt-0' : "mt-4"
       )}>
-          <div>
-            <p className="text-sm text-gray-600">
-              Archivo cargado: <span className="font-medium">{fileName}</span>
-            </p>
-            <p className="text-sm text-gray-500">Filas: {data.length}</p>
-          </div>
+        <div>
+          <p className="text-sm text-gray-600">
+            Archivo cargado: <span className="font-medium">{fileName}</span>
+          </p>
+          <p className="text-sm text-gray-500">Filas: {data.length}</p>
+        </div>
 
         <div className="">
-          <button onClick={() => setIsFileLoaded(!isFileLoaded)} className="px-3 mx-2 py-1 rounded-md border hover:bg-white">
+          <button
+            title={isFileLoaded ? 'Cambiar archivo' : "Ocultar panel"}
+            onClick={() => setIsFileLoaded(!isFileLoaded)}
+            className="px-3 mx-2 py-1 rounded-md border hover:bg-white"
+          >
             ⚙️
           </button>
 
@@ -145,44 +150,44 @@ export function SmartCsvDropzone () {
           </button>
         </div>
       </div>
-      )}
+    )}
 
-      {error && <div className="mt-4 text-red-600">{error}</div>}
+    {error && <div className="mt-4 text-red-600">{error}</div>}
 
     {showTable && data.length > 0 && (
       <div /* TableExcel */ className="mt-6 overflow-auto border rounded-lg">
-          <table className="min-w-full divide-y">
-            <thead className="bg-gray-50 sticky top-0">
-              <tr>
+        <table className="min-w-full divide-y">
+          <thead className="bg-gray-50 sticky top-0">
+            <tr>
+              {headers.map((h) => (
+                <th
+                  key={h}
+                  className="px-4 py-2 text-left text-sm font-medium text-gray-700"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {data.map((row, i) => (
+              <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                 {headers.map((h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-2 text-left text-sm font-medium text-gray-700"
-                  >
-                    {h}
-                  </th>
+                  <td key={h} className="px-4 py-2 text-sm whitespace-pre">
+                    {String(row[ h ] ?? "")}
+                  </td>
                 ))}
               </tr>
-            </thead>
-            <tbody className="bg-white">
-              {data.map((row, i) => (
-                <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  {headers.map((h) => (
-                    <td key={h} className="px-4 py-2 text-sm whitespace-pre">
-                      {String(row[ h ] ?? "")}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
 
-      {data.length === 0 && !error && (
-        <p className="mt-4 text-sm text-gray-500">
-          No hay datos cargados aún.
-        </p>
-      )}
-    </div>
+    {data.length === 0 && !error && (
+      <p className="mt-4 text-sm text-gray-500">
+        No hay datos cargados aún.
+      </p>
+    )}
+  </div>
 }
