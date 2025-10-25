@@ -23,8 +23,8 @@ export default function App () {
     {!isPrinting && <Header />}
     <SmartCsvDropzone />
 
-    <TradeHistoryReport />
+    {/* <TradeHistoryReport /> */}
 
-    <TradeCalendar />
+    {/* <TradeCalendar /> */}
   </div>
 }

@@ -3,19 +3,21 @@
 // Este componente acepta .xlsx o .csv
 // Si es Excel, lo convierte automáticamente a CSV y lo procesa con PapaParse.
 
-import React, { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import Papa, { ParseResult } from "papaparse";
-import * as XLSX from "xlsx";
+import React, { useCallback, useState } from "react"
+import { useDropzone } from "react-dropzone"
+import Papa, { ParseResult } from "papaparse"
+import * as XLSX from "xlsx"
+import { cx } from "@/utilities"
 
-type Row = Record<string, string | number | null>;
+type Row = Record<string, string | number | null>
 
 export function SmartCsvDropzone () {
-  const [ data, setData ] = useState<Row[]>([]);
-  const [ showTable, setShowTable ] = useState<boolean>(false);
-  const [ headers, setHeaders ] = useState<string[]>([]);
-  const [ error, setError ] = useState<string | null>(null);
-  const [ fileName, setFileName ] = useState<string | null>(null);
+  const [ data, setData ] = useState<Row[]>([])
+  const [ showTable, setShowTable ] = useState<boolean>(false)
+  const [ isFileLoaded, setIsFileLoaded ] = useState<boolean>(false)
+  const [ headers, setHeaders ] = useState<string[]>([])
+  const [ error, setError ] = useState<string | null>(null)
+  const [ fileName, setFileName ] = useState<string | null>(null)
 
   const processCsvString = (csvString: string) => {
     Papa.parse(csvString, {
@@ -24,56 +26,57 @@ export function SmartCsvDropzone () {
       dynamicTyping: true,
       complete: (results: ParseResult<Row>) => {
         if (results.data && results.data.length > 0) {
-          const parsed = results.data as Row[];
-          setData(parsed);
-          const metaFields = results.meta.fields as string[] | null;
-          setHeaders(metaFields?.length ? metaFields : Object.keys(parsed[ 0 ]));
+          const parsed = results.data as Row[]
+          setData(parsed)
+          const metaFields = results.meta.fields as string[] | null
+          setHeaders(metaFields?.length ? metaFields : Object.keys(parsed[ 0 ]))
         } else {
-          setData([]);
-          setHeaders([]);
+          setData([])
+          setHeaders([])
         }
       },
       error: (err) => setError(`Error parsing CSV: ${ err.message }`),
-    });
-  };
+    })
+  }
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setError(null);
-    if (!acceptedFiles.length) return;
+    setError(null)
+    if (!acceptedFiles.length) return
 
-    const file = acceptedFiles[ 0 ];
-    setFileName(file.name);
+    const file = acceptedFiles[ 0 ]
+    setFileName(file.name)
 
     // Detecta tipo de archivo por extensión o MIME
     const isExcel =
       file.type ===
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-      file.name.toLowerCase().endsWith(".xlsx");
+      file.name.toLowerCase().endsWith(".xlsx")
 
     if (isExcel) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
         try {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: "array" });
-          const firstSheet = workbook.Sheets[ workbook.SheetNames[ 0 ] ];
-          const csvString = XLSX.utils.sheet_to_csv(firstSheet);
-          processCsvString(csvString);
+          const data = new Uint8Array(e.target?.result as ArrayBuffer)
+          const workbook = XLSX.read(data, { type: "array" })
+          const firstSheet = workbook.Sheets[ workbook.SheetNames[ 0 ] ]
+          const csvString = XLSX.utils.sheet_to_csv(firstSheet)
+          processCsvString(csvString)
         } catch (err: any) {
-          setError("Error convirtiendo Excel a CSV: " + err.message);
+          setError("Error convirtiendo Excel a CSV: " + err.message)
         }
-      };
-      reader.readAsArrayBuffer(file);
+      }
+      reader.readAsArrayBuffer(file)
     } else {
       // Asumir que ya es CSV
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        const text = e.target?.result as string;
-        processCsvString(text);
-      };
-      reader.readAsText(file, "utf-8");
+        const text = e.target?.result as string
+        processCsvString(text)
+      }
+      reader.readAsText(file, "utf-8")
     }
-  }, []);
+    setIsFileLoaded(!isFileLoaded)
+  }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -82,21 +85,20 @@ export function SmartCsvDropzone () {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [ ".xlsx" ],
     },
     multiple: false,
-  });
+  })
 
   const clear = () => {
-    setData([]);
-    setHeaders([]);
-    setError(null);
-    setFileName(null);
-  };
+    setData([])
+    setHeaders([])
+    setError(null)
+    setFileName(null)
+  }
 
-  return !showTable ? <div>
-    noTable
-  </div>
-    :
-    <div /* TableExcel */ className="mx-auto p-6 absolute inset-0 z-10 bg-macLight">
-      <h2 className="text-2xl font-semibold mb-4">🧠 Traiga aquí su historial de metatrader 5</h2>
+  //  absolute inset-0 z-10 
+  return <div /* DragAndDrop */ className="mx-auto p-6 bg-macLight">
+
+    <div className={cx(isFileLoaded ? 'hidden' : '')}>
+      <h2 className="text-2xl font-semibold mb-4">⬇️ Traiga aquí su historial de metatrader 5</h2>
 
       <div
         {...getRootProps()}
@@ -115,25 +117,40 @@ export function SmartCsvDropzone () {
           </p>
         </div>
       </div>
+    </div>
 
       {fileName && (
-        <div className="mt-4 flex items-center justify-between">
+      <div className={cx(
+        'flex items-center justify-between',
+        isFileLoaded ? 'mt-0' : "mt-4"
+      )}>
           <div>
             <p className="text-sm text-gray-600">
               Archivo cargado: <span className="font-medium">{fileName}</span>
             </p>
             <p className="text-sm text-gray-500">Filas: {data.length}</p>
           </div>
-          <button onClick={clear} className="px-3 py-1 rounded-md border">
+
+        <div className="">
+          <button onClick={() => setIsFileLoaded(!isFileLoaded)} className="px-3 mx-2 py-1 rounded-md border hover:bg-white">
+            ⚙️
+          </button>
+
+          <button onClick={clear} className="px-3 py-1 rounded-md border hover:bg-white">
             Limpiar
           </button>
+
+          <button onClick={() => setShowTable(!showTable)} className="px-3 mx-2 py-1 rounded-md border hover:bg-white">
+            {!showTable ? 'Ver tabla' : 'Ocultar tabla'}
+          </button>
         </div>
+      </div>
       )}
 
       {error && <div className="mt-4 text-red-600">{error}</div>}
 
-      {data.length > 0 && (
-        <div className="mt-6 overflow-auto border rounded-lg">
+    {showTable && data.length > 0 && (
+      <div /* TableExcel */ className="mt-6 overflow-auto border rounded-lg">
           <table className="min-w-full divide-y">
             <thead className="bg-gray-50 sticky top-0">
               <tr>
